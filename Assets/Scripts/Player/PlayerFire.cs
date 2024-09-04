@@ -19,6 +19,23 @@ public class PlayerFire : MonoBehaviour
     /// </summary>
     public float throwPower = 15.0f;
 
+    /// <summary>
+    /// 피격 이펙트 오브젝트
+    /// </summary>
+    public GameObject bulletEffect;
+
+    /// <summary>
+    /// 피격 이펙트 파티클 시스템
+    /// </summary>
+    ParticleSystem ps;
+
+    public void Start()
+    {
+        // 피격 이펙트 오브젝트에서 파티클 시스템 컴포넌트 가져오기
+        ps = bulletEffect.GetComponent<ParticleSystem>();
+    }
+
+
     public void Update()
     {
         // 마우스의 오른쪽 버튼을 누르면 실행
@@ -35,6 +52,27 @@ public class PlayerFire : MonoBehaviour
 
             // 카메라의 정면 방향으로 수류탄에 물리적인 힘을 가한다.
             rb.AddForce(Camera.main.transform.forward * throwPower, ForceMode.Impulse);
+        }
+        // 마우스의 왼쪽 버튼을 누르면 실행
+        if (Input.GetMouseButton(0))
+        {
+            // 레이를 생성한 후 발사될 위치와 진행 방향을 설정한다.
+            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+            
+            // 레이가 부딪힌 대상의 정보를 저장할 변수를 생성한다.
+            RaycastHit hit = new RaycastHit();
+
+            // 레이를 발사한 후 부딪힌 물체가 있으면 피격 이펙트를 표시한다.
+            if(Physics.Raycast(ray, out hit))
+            {
+                // 피격 이펙트의 위치를 레이가 부딪힌 지점으로 이동시킨다.
+                bulletEffect.transform.position = hit.point;
+
+                bulletEffect.transform.forward = hit.normal;
+
+                // 피격 이펙트를 플레이한다.
+                ps.Play();
+            }
         }
     }
 }
