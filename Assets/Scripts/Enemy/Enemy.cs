@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
@@ -90,6 +91,10 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public int weponPower = 5;
 
+    /// <summary>
+    /// 적 슬라이더
+    /// </summary>
+    public Slider Slider;
 
     private void Start()
     {
@@ -130,6 +135,10 @@ public class Enemy : MonoBehaviour
                 //Die();
                 break;
         }
+
+        // 적의 hp바는 hp / maxhp이다.
+        Slider.value = (float)hp / (float)maxhp;
+
     }
 
     public void Idle()

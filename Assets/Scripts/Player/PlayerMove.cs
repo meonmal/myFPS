@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -34,8 +35,20 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     public bool Isjumping = false;
 
+    /// <summary>
+    /// 플레이어 체력
+    /// </summary>
+    public int hp = 50;
 
-    public int hp = 3;
+    /// <summary>
+    /// 플레이어 최대 체력
+    /// </summary>
+    public int Maxhp = 50;
+
+    /// <summary>
+    /// hp 슬라이더
+    /// </summary>
+    public Slider slider;
 
     private void Start()
     {
@@ -84,6 +97,10 @@ public class PlayerMove : MonoBehaviour
             yVelocity = jumpPower;
             Isjumping = true;
         }
+
+        // 플레이어의 체력바는 hp / maxhp의 상태로 나타난다.
+        slider.value = (float)hp / (float)Maxhp;
+
     }
 
     // 플레이어의 피격 함수
