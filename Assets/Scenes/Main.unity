@@ -274,6 +274,7 @@ MonoBehaviour:
   yVelocity: 0
   jumpPower: 10
   Isjumping: 0
+  hp: 3
 --- !u!143 &675171009
 CharacterController:
   m_ObjectHideFlags: 0
@@ -938,7 +939,7 @@ GameObject:
   - component: {fileID: 1740048201}
   - component: {fileID: 1740048200}
   - component: {fileID: 1740048204}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1051,6 +1052,13 @@ MonoBehaviour:
   findDistance: 8
   attackDistance: 2
   moveSpeed: 5
+  currentTime: 0
+  attackDelay: 2
+  attackPower: 3
+  moveDistance: 20
+  hp: 3
+  maxhp: 3
+  weponPower: 5
 --- !u!1001 &1868044383
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -29,7 +29,13 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     public float jumpPower = 5.0f;
 
+    /// <summary>
+    /// 현재 점프 상태
+    /// </summary>
     public bool Isjumping = false;
+
+
+    public int hp = 3;
 
     private void Start()
     {
@@ -78,5 +84,12 @@ public class PlayerMove : MonoBehaviour
             yVelocity = jumpPower;
             Isjumping = true;
         }
+    }
+
+    // 플레이어의 피격 함수
+    public void DamageAction(int damage)
+    {
+        // 에너미의 공격력만큼 플레이어의 체력 깎기
+        hp -= damage;
     }
 }
