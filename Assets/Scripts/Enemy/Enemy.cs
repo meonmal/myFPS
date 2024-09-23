@@ -68,13 +68,13 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// 초기 위치 저장용
     /// </summary>
-    Vector3 originposition;
+    Vector3 originPos;
+    Quaternion originRot;
 
     /// <summary>
     /// 이동 가능 범위
     /// </summary>
     public float moveDistance = 20.0f;
-
 
     /// <summary>
     /// 적의 체력
@@ -96,6 +96,11 @@ public class Enemy : MonoBehaviour
     /// </summary>
     public Slider Slider;
 
+    /// <summary>
+    /// 적의 애니메이터
+    /// </summary>
+    public Animator animator;
+
     private void Start()
     {
         // 적이 처음에 하는 행동은 대기다.
@@ -108,7 +113,11 @@ public class Enemy : MonoBehaviour
         cc = GetComponent<CharacterController>();
 
         // 적의 초기 위치 저장
-        originposition = transform.position;
+        originPos = transform.position;
+        originRot = transform.rotation;
+
+        // 자식 오브젝트에서 애니메이터 받아오기
+        animator = transform.GetComponentInChildren<Animator>();
     }
 
     private void Update()
@@ -148,12 +157,15 @@ public class Enemy : MonoBehaviour
         {
             m_State = EnemyState.Move;
             print("상태 전환 Idle -> Move");
+
+            // 이동 애니메이션으로 전환
+            animator.SetTrigger("IdleToMove");
         }
     }
     public void Move()
     {
         // 현재 위치가 초기 위치에서 이동 가능 범위를 넘어간다면 실행
-        if (Vector3.Distance(transform.position, originposition) > moveDistance)
+        if (Vector3.Distance(transform.position, originPos) > moveDistance)
         {
             // 현재 상태를 Return으로 복귀
             m_State = EnemyState.Return;
@@ -165,6 +177,9 @@ public class Enemy : MonoBehaviour
             Vector3 dir = (player.position - transform.position).normalized;
 
             cc.Move(dir * moveSpeed * Time.deltaTime);
+
+            // 바라보는 방향은 플레이어에게 향하도록 만들기
+            transform.forward = dir;
         }
         // 위의 경우가 둘 다 아니라면 실행
         else
@@ -172,6 +187,12 @@ public class Enemy : MonoBehaviour
             // 적의 상태를 Attack으로 변환
             m_State = EnemyState.Attack;
             print("상태 전환 : Move -> Attack");
+
+            // 누적 시간을 공격 딜레이 시간만큼 미리 진행시키기
+            currentTime = attackDelay;
+
+            // 공격 대기 애니메이션으로 전환
+            animator.SetTrigger("MoveToAttackDelay");
         }
     }
 
@@ -185,10 +206,12 @@ public class Enemy : MonoBehaviour
 
             if(currentTime > attackDelay)
             {
-                player.GetComponent<PlayerMove>().DamageAction(attackPower);
+                // player.GetComponent<PlayerMove>().DamageAction(attackPower);
                 print("공격");
                 currentTime = 0;
 
+                // 공격 애니메이션으로 전환
+                animator.SetTrigger("StartAttack");
             }
         }
         // 그렇지 않다면 실행
@@ -198,28 +221,37 @@ public class Enemy : MonoBehaviour
             m_State = EnemyState.Move;
             print("상태전환 Attack -> Move");
             currentTime = 0;
+
+            // 이동 애니메이션으로 전환
+            animator.SetTrigger("AttackToMove");
         }
     }
 
     public void Return()
     {
         // 초기 위치에서의 거리가 0.1f 이상이면 실행
-        if(Vector3.Distance(transform.position , originposition) > 0.1f)
+        if(Vector3.Distance(transform.position , originPos) > 0.1f)
         {
             // 초기 위치 쪽으로 이동
-            Vector3 dir = (originposition - transform.position).normalized;
+            Vector3 dir = (originPos - transform.position).normalized;
             cc.Move(dir * moveSpeed * Time.deltaTime);
         }
         // 그렇지 않다면 실행
         else
         {
             // 적의 위치 초기화
-            transform.position = originposition;
+            transform.position = originPos;
+            originRot = transform.rotation;
+
             // hp를 다시 회복한다.
             hp = maxhp;
+
             // 적의 상태를 전환한다.
             m_State = EnemyState.Idle;
             print("상태 전환 Return -> Idle");
+
+            // 대기 애니메이션으로 전환
+            animator.SetTrigger("MoveToIdle");
         }
     }
 
@@ -282,6 +314,8 @@ public class Enemy : MonoBehaviour
             // 상태를 Attack으로 변경
             m_State = EnemyState.Attack;
             print("상태 전환 Any state -> Damaged");
+
+            animator.SetTrigger("Damaged");
             Damage();
         }
         // 그렇지 않다면 죽음상태로 전환
@@ -293,5 +327,14 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    
+    /// <summary>
+    /// 플레이어의 데미지 처리 함수 실행용
+    /// </summary>
+    public void AttackAction()
+    {
+        player.GetComponent<PlayerMove>().DamageAction(attackPower);
+    }
+
+
+
 }

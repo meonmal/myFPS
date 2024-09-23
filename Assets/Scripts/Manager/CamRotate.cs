@@ -13,8 +13,14 @@ public class CamRotate : MonoBehaviour
 
     private void Update()
     {
+        // 게임 상태가 게임중일때만 조작 가능
+        if (GameManager.gm.state != GameManager.State.Play)
+        {
+            return;
+        }
+
         // 마우스의 입력을 받아 물체 회전하기
-        
+
         // 마우스의 입력을 받는다
         float MouseX = Input.GetAxis("Mouse X");
         float MouseY = Input.GetAxis("Mouse Y");

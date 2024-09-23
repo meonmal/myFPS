@@ -44,6 +44,12 @@ public class PlayerFire : MonoBehaviour
 
     public void Update()
     {
+        // 게임 상태가 게임중일때만 조작 가능
+        if (GameManager.gm.state != GameManager.State.Play)
+        {
+            return;
+        }
+
         // 마우스의 오른쪽 버튼을 누르면 실행
         if (Input.GetMouseButton(1))
         {

@@ -50,6 +50,11 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     public Slider slider;
 
+    /// <summary>
+    /// Hit È¿°ú ¿ÀºêÁ§Æ®
+    /// </summary>
+    public GameObject hitEffect;
+
     private void Start()
     {
         cc = GetComponent<CharacterController>();
@@ -58,6 +63,12 @@ public class PlayerMove : MonoBehaviour
 
     private void Update()
     {
+        // °ÔÀÓ »óÅÂ°¡ °ÔÀÓÁßÀÏ¶§¸¸ Á¶ÀÛ °¡´É
+        if (GameManager.gm.state != GameManager.State.Play)
+        {
+            return;
+        }
+
         // W, A, S, D·Î ¿òÁ÷ÀÌ°Ô ¸¸µé±â
         // ÇÃ·¹ÀÌ¾îÀÇ ÀÔ·Â ¹Ş±â
         float h = Input.GetAxis("Horizontal");
@@ -103,10 +114,36 @@ public class PlayerMove : MonoBehaviour
 
     }
 
-    // ÇÃ·¹ÀÌ¾îÀÇ ÇÇ°İ ÇÔ¼ö
+    /// <summary>
+    /// ÇÃ·¹ÀÌ¾îÀÇ ÇÇ°İ ÇÔ¼ö
+    /// </summary>
+    /// <param name="damage">ÇÃ·¹ÀÌ¾î°¡ ¹Ş´Â µ¥¹ÌÁö</param>
     public void DamageAction(int damage)
     {
         // ¿¡³Ê¹ÌÀÇ °ø°İ·Â¸¸Å­ ÇÃ·¹ÀÌ¾îÀÇ Ã¼·Â ±ğ±â
         hp -= damage;
+
+        // ÇÃ·¹ÀÌ¾î¯M Ã¼·ÂÀÌ 0 ÀÌ»óÀÏ ¶§
+        if(hp > 0)
+        {
+            // µ¥¹ÌÁö¸¦ ¹ŞÀ¸¸é PlayerHit()ÇÔ¼ö ½ÇÇà
+            StartCoroutine(PlayerHit());
+        }
+    }
+
+    /// <summary>
+    /// ÇÃ·¹ÀÌ¾î ÇÇ°İ ÀÌÆåÆ® ½ÇÇà ÇÔ¼ö
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator PlayerHit()
+    {
+        // 1. ÀÌÆåÆ® È°¼ºÈ­
+        hitEffect.SetActive(true);
+
+        // 2. ÀÌÆåÆ® È°¼ºÈ­ ÈÄ 0.3ÃÊ°¡ Áö³ª¸é
+        yield return new WaitForSeconds(0.3f);
+
+        // 3. ÀÌÆåÆ® ºñÈ°¼ºÈ­
+        hitEffect.SetActive(false);
     }
 }
