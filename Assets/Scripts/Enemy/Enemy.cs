@@ -268,7 +268,7 @@ public class Enemy : MonoBehaviour
     IEnumerator DamageProcess()
     {
         // 피격 모션 시간만큼 기다린다.
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
 
         // 현재 상태를 이동 상태로 전환
         m_State = EnemyState.Move;
@@ -313,9 +313,9 @@ public class Enemy : MonoBehaviour
         {
             // 상태를 Attack으로 변경
             m_State = EnemyState.Attack;
-            print("상태 전환 Any state -> Damaged");
+            print("상태 전환 Any state -> Damage");
 
-            animator.SetTrigger("Damaged");
+            animator.SetTrigger("Damage");
             Damage();
         }
         // 그렇지 않다면 죽음상태로 전환
@@ -323,6 +323,7 @@ public class Enemy : MonoBehaviour
         {
             m_State = EnemyState.Die;
             print("상태 전환 any state -> Die");
+            animator.SetTrigger("Die");
             Die();
         }
     }

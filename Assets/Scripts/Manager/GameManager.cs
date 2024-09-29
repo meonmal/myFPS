@@ -89,6 +89,8 @@ public class GameManager : MonoBehaviour
         // 플레이어의 체력이 0 이하가 되면
         if(player.hp <= 0)
         {
+            player.GetComponentInChildren<Animator>().SetFloat("MoveMotion", 0f);
+
             // 다시 상태 텍스트를 활성화 시키고
             gameLabel.SetActive(true);
 

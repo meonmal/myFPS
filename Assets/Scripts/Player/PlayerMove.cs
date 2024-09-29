@@ -55,9 +55,14 @@ public class PlayerMove : MonoBehaviour
     /// </summary>
     public GameObject hitEffect;
 
+
+    Animator animator;
+
     private void Start()
     {
         cc = GetComponent<CharacterController>();
+
+        animator = GetComponentInChildren<Animator>();
     }
 
 
@@ -77,6 +82,8 @@ public class PlayerMove : MonoBehaviour
         // 이동 방향 설정
         Vector3 dir = new Vector3(h, 0, v);
         dir = dir.normalized;
+
+        animator.SetFloat("MoveMotion", dir.magnitude);
 
         // 메인 카메라 기준으로 방향 변환
         dir = Camera.main.transform.TransformDirection(dir);
